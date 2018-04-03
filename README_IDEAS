@@ -7,7 +7,8 @@ Appli projet CAI
 + Trouver couleurs pour logo et fonds barre navigation
 + Dessiner logo (à ajouter logo appli + page d'accueil)
 
-Localisation sur map, possibilité de faire un parcours, récupération des données dans un onglet séparé (accéléro, gyro, etc…)
+Localisation sur map, possibilité de faire un parcours, récupération des données dans un onglet séparé (accéléro, gyro, etc…).
+Ajouter dans la BDD les infos des parcours (nbre de parcours, données, etc...) pour faire des calculs après (distance/vitesse moyenne, calories (en fonction d'algorithmes récupérés sur internet)).
 
 Connexion par compte (id, mdp), sauvegarde par shared preferences.
 
