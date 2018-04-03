@@ -1,4 +1,4 @@
-package com.example.nicolas.projet_cai;
+package com.example.nicolas.projet_cai.Fragments;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.nicolas.projet_cai.BDD.BDD;
 import com.example.nicolas.projet_cai.BDD.Localisation;
+import com.example.nicolas.projet_cai.R;
 import com.example.nicolas.projet_cai.Services.RideLocationGetter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -40,7 +41,7 @@ import java.util.List;
 import static android.content.Context.LOCATION_SERVICE;
 
 /**
- * Created by Valentin on 08/02/2017.
+ * Created by Nicolas on 03/04/2018.
  */
 
 public class MapViewFragment extends Fragment {
@@ -119,8 +120,6 @@ public class MapViewFragment extends Fragment {
                         polylineOptions.add(locs.get(i).getLocation());
                     }
                     Polyline line = googleMap.addPolyline(polylineOptions);
-                    //googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
-
 
                     // For zooming automatically to the location of the marker
                     CameraPosition cameraPosition = new CameraPosition.Builder().target(locs.get(0).getLocation()).zoom(14).build();
@@ -135,10 +134,9 @@ public class MapViewFragment extends Fragment {
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            Toast.makeText(getActivity(), "GPS is Enabled in your devide", Toast.LENGTH_SHORT).show();
-        }else{
+            Toast.makeText(getActivity(), "GPS activé sur votre téléphone", Toast.LENGTH_SHORT).show();
+        } else {
            showGPSDisabledAlertToUser();
-            //Toast.makeText(getActivity(), "GPS is Disabled ! Please enable it to get better locations.", Toast.LENGTH_SHORT).show();
         }
 
         FloatingActionButton myFabStart = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButtonStart);
@@ -163,7 +161,7 @@ public class MapViewFragment extends Fragment {
         myFabClean.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 bdd.clearTable("TABLE_LOC");
-                Toast.makeText(getActivity(), "Location table clean", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Parcours supprimé.", Toast.LENGTH_SHORT).show();
                 if (googleMap!=null) {
                     googleMap.clear();
                 }
@@ -209,9 +207,9 @@ public class MapViewFragment extends Fragment {
 
     private void showGPSDisabledAlertToUser(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        alertDialogBuilder.setMessage("GPS is disabled in your device. Please enable it to get better locations.")
+        alertDialogBuilder.setMessage("GPS désactivé sur votre téléphone. Veuillez l'activer pour accéder à cette fonctionnalité.")
                 .setCancelable(false)
-                .setPositiveButton("Goto Settings Page To Enable GPS",
+                .setPositiveButton("Aller dans vos paramètres pour activer la fonctionnalité GPS.",
                         new DialogInterface.OnClickListener(){
                             public void onClick(DialogInterface dialog, int id){
                                 Intent callGPSSettingIntent = new Intent(
@@ -219,7 +217,7 @@ public class MapViewFragment extends Fragment {
                                 startActivity(callGPSSettingIntent);
                             }
                         });
-        alertDialogBuilder.setNegativeButton("Cancel",
+        alertDialogBuilder.setNegativeButton("Annuler",
                 new DialogInterface.OnClickListener(){
                     public void onClick(DialogInterface dialog, int id){
                         dialog.cancel();

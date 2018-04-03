@@ -1,5 +1,9 @@
 package com.example.nicolas.projet_cai.Services;
 
+/**
+ * Created by Nicolas on 03/04/2018.
+ */
+
 import android.Manifest;
 import android.app.Service;
 import android.content.Context;

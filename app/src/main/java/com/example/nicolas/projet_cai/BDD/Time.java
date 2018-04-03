@@ -1,7 +1,7 @@
 package com.example.nicolas.projet_cai.BDD;
 
 /**
- * Created by Valentin on 10/02/2017.
+ * Created by Nicolas on 03/04/2018.
  */
 
 public class Time {

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:text="Merci de vous connecter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#000000"
+        android:id="@+id/textInfo1" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/identifiant"
+        android:hint="Identifiant"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:focusable="false"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/motdepasse"
+        android:hint="Mot de passe"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:focusable="true"/>
+
+</LinearLayout>

@@ -3,7 +3,7 @@ package com.example.nicolas.projet_cai.BDD;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
- * Created by Valentin on 10/02/2017.
+ * Created by Nicolas on 03/04/2018.
  */
 
 public class Localisation {

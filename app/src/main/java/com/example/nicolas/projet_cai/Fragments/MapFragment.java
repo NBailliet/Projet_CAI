@@ -1,4 +1,4 @@
-package com.example.nicolas.projet_cai;
+package com.example.nicolas.projet_cai.Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,8 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.nicolas.projet_cai.R;
+
 /**
- * Created by Nicolas on 01/02/2017.
+ * Created by Nicolas on 03/04/2018.
  */
 
 public class MapFragment extends Fragment {

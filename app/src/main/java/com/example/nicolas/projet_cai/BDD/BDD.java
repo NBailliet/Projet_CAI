@@ -6,6 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.example.nicolas.projet_cai.BDD.BaseSQLite;
+import com.example.nicolas.projet_cai.BDD.Localisation;
+import com.example.nicolas.projet_cai.BDD.Time;
+import com.example.nicolas.projet_cai.BDD.User;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -15,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Valentin on 10/02/2017.
+ * Created by Nicolas on 03/04/2018.
  */
 
 public class BDD {
@@ -90,7 +94,7 @@ public class BDD {
         return bdd;
     }
 
-//Localisation Table
+    //Localisation Table
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public long insertLoc(Localisation localisation){
         //Création d'un ContentValues (fonctionne comme une HashMap)
@@ -163,11 +167,11 @@ public class BDD {
         return localisation;
     }
 
- /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//Profil Table
+    //Profil Table
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-   public long insertProfil(User user){
+    public long insertProfil(User user){
         //Création d'un ContentValues (fonctionne comme une HashMap)
         ContentValues values = new ContentValues();
         //on lui ajoute une valeur associé à une clé (qui est le nom de la colonne dans laquelle on veut mettre la valeur)
@@ -191,7 +195,7 @@ public class BDD {
         values.put(COL_PROFIL_AGE, user.getAge());
         String t2=gson.toJson(user.getCreationDate());
         values.put(COL_PROFIL_CREATION, t2);
-       return bdd.update(TABLE_PROFIL, values, COL_PROFIL_LOGIN + " LIKE \"" + user.getLogin() +"\"", null);
+        return bdd.update(TABLE_PROFIL, values, COL_PROFIL_LOGIN + " LIKE \"" + user.getLogin() +"\"", null);
     }
 
     public User getUserWithLogin(String login){
@@ -203,7 +207,7 @@ public class BDD {
     public List<User> getAllProfil() {
         List<User> users = new ArrayList<User>();
         Cursor cursor = bdd.query(TABLE_PROFIL,
-              new String[] {COL_PROFIL_ID, COL_PROFIL_LOGIN, COL_PROFIL_PWD, COL_PROFIL_NAME,COL_PROFIL_SURNAME, COL_PROFIL_AGE, COL_PROFIL_CREATION}, null, null, null, null, null);
+                new String[] {COL_PROFIL_ID, COL_PROFIL_LOGIN, COL_PROFIL_PWD, COL_PROFIL_NAME,COL_PROFIL_SURNAME, COL_PROFIL_AGE, COL_PROFIL_CREATION}, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             User user = cursorToProfil(cursor);
