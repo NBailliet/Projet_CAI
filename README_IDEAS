@@ -1,0 +1,18 @@
+Appli projet CAI
+
+
+
+
++ Trouver nom
++ Dessiner logo (à ajouter logo appli + page d'accueil)
+
+Localisation sur map, possibilité de faire un parcours, récupération des données dans un onglet séparé (accéléro, gyro, etc…)
+
+Connexion par compte (id, mdp), sauvegarde par shared preferences.
+
+Onglet settings, bluetooth pour partager certaines données ?
+
+Partage des données par sms, email, etc
+
+Affichage dans la barre des notifications lorsqu'un parcours est lancé.
+
