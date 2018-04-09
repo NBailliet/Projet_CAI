@@ -17,6 +17,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.Attributes;
 
 /**
  * Created by Nicolas on 03/04/2018.
@@ -27,14 +28,14 @@ public class BDD {
     Gson gson = new Gson();
 
     private static final int VERSION_BDD = 3;
-    private static final String NOM_BDD = "SmartRideBDD.db";
+    private static final String NOM_BDD = "RunYourDataBDD.db";
 
     //Profil Table
     private static final String TABLE_PROFIL = "TABLE_PROFIL";
     private static final String COL_PROFIL_ID = "PROFIL_ID";
     private static final int NUM_COL_PROFIL_ID = 0;
     private static final String COL_PROFIL_LOGIN = "PROFIL_LOGIN";
-    private static final int NUM_COL_PROFIL_LOGIN =1;
+    private static final int NUM_COL_PROFIL_LOGIN = 1;
     private static final String COL_PROFIL_PWD = "PROFIL_PWD";
     private static final int NUM_COL_PROFIL_PWD = 2;
     private static final String COL_PROFIL_NAME = "PROFIL_NAME";
@@ -47,15 +48,17 @@ public class BDD {
     private static final int NUM_COL_PROFIL_CREATION = 6;
 
     //Run Table
-    private static final String TABLE_RUN = "table_run";
-    private static final String COL_RUN_ID = "run_ID";
+    private static final String TABLE_RUN = "TABLE_RUN";
+    private static final String COL_RUN_ID = "RUN_ID";
     private static final int NUM_COL_RUN_ID = 0;
-    private static final String COL_RUN_NAME = "Loc_run_name";
+    private static final String COL_RUN_NAME = "RUN_NAME";
     private static final int NUM_COL_RUN_NAME = 1;
-    private static final String COL_RUN_DATE = "run_date";
-    private static final int NUM_COL_RUN_DATE = 2;
-    private static final String COL_RUN_PROFIL = "run_profil";
-    private static final int NUM_COL_RUN_PROFIL= 3;
+    private static final String COL_RUN_LOGIN = "RUN_LOGIN";
+    private static final int NUM_COL_RUN_LOGIN = 2;
+    private static final String COL_RUN_DIST = "RUN_DIST";
+    private static final int NUM_COL_RUN_DIST = 3;
+    //private static final String COL_RUN_VIT = "RUN_VIT";
+    //private static final int NUM_COL_RUN_VIT = 4;
 
     //Location Table
     private static final String TABLE_LOC = "TABLE_LOC";
@@ -76,17 +79,14 @@ public class BDD {
     private BaseSQLite maBaseSQLite;
 
     public BDD(Context context){
-        //On créer la BDD et sa table
         maBaseSQLite = new BaseSQLite(context, NOM_BDD, null, VERSION_BDD);
     }
 
     public void open(){
-        //on ouvre la BDD en écriture
         bdd = maBaseSQLite.getWritableDatabase();
     }
 
     public void close(){
-        //on ferme l'accès à la BDD
         bdd.close();
     }
 
@@ -94,22 +94,104 @@ public class BDD {
         return bdd;
     }
 
+    //Run Table
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public long insertRun(Run run){
+        ContentValues values = new ContentValues();
+        values.put(COL_RUN_NAME, run.getName());
+        //String t1=gson.toJson(run.getDate());
+        //values.put(COL_RUN_DATE, t1);
+        values.put(COL_RUN_LOGIN, run.getLogin());
+
+        values.put(COL_RUN_DIST, run.getDistance());
+        //values.put(COL_RUN_VIT, run.getVitesse());
+        return bdd.insert(TABLE_RUN, null, values);
+    }
+
+    public int updateRun(Run run){
+        ContentValues values = new ContentValues();
+        //values.put(COL_RUN_NAME, run.getName());
+        //String t1=gson.toJson(run.getDate());
+        //values.put(COL_RUN_DATE, t1);
+        values.put(COL_RUN_LOGIN, run.getLogin());
+        values.put(COL_RUN_DIST, run.getDistance());
+        //values.put(COL_RUN_VIT, run.getVitesse());
+        return bdd.update(TABLE_RUN, values, COL_RUN_NAME + " = " + run.getName(), null);
+    }
+
+    public List<Run> getRunsWithLogin(String login){
+        List<Run> runs = new ArrayList<>();
+        Cursor c = bdd.query(TABLE_RUN, new String[] {COL_RUN_ID, COL_RUN_NAME, COL_RUN_LOGIN, COL_RUN_DIST}, COL_RUN_LOGIN + " LIKE \"" + login +"\"", null, null, null, null);
+        c.moveToFirst();
+        while (!c.isAfterLast()) {
+            Run run = cursorToRun(c);
+            runs.add(run);
+            c.moveToNext();
+        }
+        return runs;
+    }
+
+    private Run cursorToRun(Cursor c){
+        //si aucun élément n'a été retourné dans la requête, on renvoie null
+        if (c.getCount() == 0)
+            return null;
+
+        //On créé un run
+        Run run = new Run(null, null, 0);
+
+        //on lui affecte toutes les infos grâce aux infos contenues dans le Cursor
+        run.setName(c.getString(NUM_COL_RUN_NAME));
+
+        //Type type = new TypeToken<User>() {}.getType();
+        run.setLogin(c.getString(NUM_COL_RUN_LOGIN));
+
+        run.setDistance(c.getDouble(NUM_COL_RUN_DIST));
+
+
+        //run.setVitesse(c.getDouble(NUM_COL_RUN_VIT));
+
+        return run;
+    }
+
+    public List<Run> getAllRun() {
+        List<Run> runs = new ArrayList<>();
+        Cursor cursor = bdd.query(TABLE_RUN,
+                new String[] {COL_RUN_ID, COL_RUN_NAME, COL_RUN_LOGIN, COL_RUN_DIST}, null, null, null, null, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            System.out.println("CURSOR POSITION = " + Integer.toString(cursor.getPosition()));
+            if (cursorToRun(cursor)==null) {
+                return null;
+            }
+            else {
+                Run run = cursorToRun(cursor);
+                runs.add(run);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        return runs;
+    }
+
+    public void clearRunsForLogin(String nameoftable, String login){
+        bdd=maBaseSQLite.getWritableDatabase();
+        bdd.delete(nameoftable,COL_RUN_LOGIN+ " = " + login,null);
+        bdd.close();
+    }
+
     //Localisation Table
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public long insertLoc(Localisation localisation){
-        //Création d'un ContentValues (fonctionne comme une HashMap)
         ContentValues values = new ContentValues();
-        //on lui ajoute une valeur associé à une clé (qui est le nom de la colonne dans laquelle on veut mettre la valeur)
         values.put(COL_LOC_RUN_NAME, localisation.getNameOfRun());
         String t1=gson.toJson(localisation.getLocation());
         values.put(COL_LOC, t1 );
-        Log.v("BDD",t1);
         String t2=gson.toJson(localisation.getTime());
         values.put(COL_LOC_TIME, t2);
         values.put(COL_LOC_ALT,localisation.getAltitude());
-        //on insère l'objet dans la BDD via le ContentValues
         return bdd.insert(TABLE_LOC, null, values);
     }
+
 
     public int updateLoc(Localisation localisation){
         ContentValues values = new ContentValues();
@@ -123,7 +205,6 @@ public class BDD {
     }
 
     public Localisation getLocalisationWithRunName(String name){
-        //Récupère dans un Cursor les valeur correspondant à un livre contenu dans la BDD (ici on sélectionne le livre grâce à son titre)
         Cursor c = bdd.query(TABLE_LOC, new String[] {COL_LOC_ID, COL_LOC_RUN_NAME, COL_LOC, COL_LOC_TIME, COL_LOC_ALT}, COL_LOC_RUN_NAME + " LIKE \"" + name +"\"", null, null, null, null);
         return cursorToLoc(c);
     }
@@ -138,7 +219,6 @@ public class BDD {
             locs.add(localisation);
             cursor.moveToNext();
         }
-        // assurez-vous de la fermeture du curseur
         cursor.close();
         return locs;
     }
@@ -148,7 +228,6 @@ public class BDD {
         if (c.getCount() == 0)
             return null;
 
-        //On créé un livre
         Localisation localisation = new Localisation(null,null,null,0);
         //on lui affecte toutes les infos grâce aux infos contenues dans le Cursor
         localisation.setNameOfRun(c.getString(NUM_COL_LOC_RUN_NAME));
@@ -163,7 +242,6 @@ public class BDD {
 
         localisation.setAltitude(c.getDouble(NUM_COL_LOC_ALT));
 
-        //On retourne le livre
         return localisation;
     }
 
@@ -172,9 +250,7 @@ public class BDD {
     //Profil Table
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public long insertProfil(User user){
-        //Création d'un ContentValues (fonctionne comme une HashMap)
         ContentValues values = new ContentValues();
-        //on lui ajoute une valeur associé à une clé (qui est le nom de la colonne dans laquelle on veut mettre la valeur)
         values.put(COL_PROFIL_LOGIN, user.getLogin());
         values.put(COL_PROFIL_PWD, user.getPassword());
         values.put(COL_PROFIL_NAME, user.getName());
@@ -182,7 +258,6 @@ public class BDD {
         values.put(COL_PROFIL_AGE, user.getAge());
         String t2=gson.toJson(user.getCreationDate());
         values.put(COL_PROFIL_CREATION, t2);
-        //on insère l'objet dans la BDD via le ContentValues
         return bdd.insert(TABLE_PROFIL, null, values);
     }
 
@@ -214,7 +289,6 @@ public class BDD {
             users.add(user);
             cursor.moveToNext();
         }
-        // assurez-vous de la fermeture du curseur
         cursor.close();
         return users;
     }

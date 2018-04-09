@@ -9,7 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.example.nicolas.projet_cai.BDD.BDD;
+import com.example.nicolas.projet_cai.BDD.Run;
 import com.example.nicolas.projet_cai.BDD.User;
+
+import java.util.List;
 
 public class ProfilActivity extends AppCompatActivity {
 
@@ -35,9 +38,13 @@ public class ProfilActivity extends AppCompatActivity {
 
         bdd.open();
         User user = bdd.getUserWithLogin(login);
+        List<Run> run = bdd.getRunsWithLogin(login);
+        int nbRun = run.size();
+        System.out.println("NB RUN : " + nbRun);
+        double lastDistance = run.get(nbRun-1).getDistance();
         bdd.close();
 
-        if  (user!=null) {
+        if  ((user!=null)&&(run!=null)) {
             TextView loginP = (TextView) findViewById(R.id.textlogin);
             System.out.println("GETLOGIN CHECK : " + user.getLogin());
             loginP.setText(user.getLogin());
@@ -50,6 +57,17 @@ public class ProfilActivity extends AppCompatActivity {
             TextView ageP = (TextView) findViewById(R.id.textageprofil);
             System.out.println("GETAGE CHECK : " + Integer.toString(user.getAge()));
             ageP.setText(Integer.toString(user.getAge()));
+            TextView nbrunP = (TextView) findViewById(R.id.textrunprofil);
+            System.out.println("NBRUN CHECK : " + Integer.toString(nbRun));
+            nbrunP.setText(Integer.toString(nbRun));
+            TextView distP = (TextView) findViewById(R.id.textdistprofil);
+            String distString = String.format("%.11f", lastDistance);
+            System.out.println("DISTANCE CHECK : " + distString);
+            distP.setText(distString);
+        }
+        else
+        {
+            System.out.println("ERREUR NO USER");
         }
 
     }

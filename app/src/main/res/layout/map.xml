@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,39 +11,69 @@
         android:id="@+id/mapView"
         android:layout_height="match_parent" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/menu_plus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        app:fabSize="normal"
-        app:srcCompat="@android:drawable/ic_media_pause"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="25dp"
-        android:id="@+id/floatingActionButtonEnd"
-        android:onClick="RunService"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        app:fabSize="normal"
-        app:srcCompat="@android:drawable/ic_media_play"
-        android:id="@+id/floatingActionButtonStart"
-        android:layout_above="@+id/floatingActionButtonEnd"
-        android:layout_alignStart="@+id/floatingActionButtonEnd"
-        android:layout_marginBottom="15dp" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
+        android:onClick="onClick"
         app:fabSize="mini"
-        app:srcCompat="@android:drawable/ic_menu_delete"
-        android:id="@+id/floatingActionButtonCleantable"
-        android:layout_alignParentTop="true"
-        android:layout_alignEnd="@+id/floatingActionButtonStart"
-        android:layout_marginTop="109dp" />
+        app:fab_colorNormal="@color/green"
+        fab:fab_addButtonColorNormal="@color/pink"
+        fab:fab_addButtonColorPressed="@color/pink_pressed"
+        fab:fab_addButtonPlusIconColor="@color/half_black"
+        fab:fab_labelStyle="@style/menu_labels_style"
+        fab:fab_expandDirection="up"
+        android:layout_marginBottom="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/menu_plus"
+            android:src="@android:drawable/ic_media_play"
+            android:clickable="true"
+            app:fab_size="normal"
+            app:fab_colorNormal="@color/pink"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:id="@+id/floatingActionButtonStart"
+            android:onClick="RunService"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/floatingActionButtonStart"
+            android:clickable="true"
+            app:fab_size="normal"
+            app:fab_colorNormal="@color/pink"
+            android:src="@android:drawable/ic_media_pause"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:id="@+id/floatingActionButtonEnd"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/floatingActionButtonEnd"
+            android:clickable="true"
+            android:tag="Coucou"
+            app:fab_size="normal"
+            app:fab_colorNormal="@color/pink"
+            android:src="@android:drawable/ic_menu_delete"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:id="@+id/floatingActionButtonCleantable"/>
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 </RelativeLayout>

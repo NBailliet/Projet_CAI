@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-class SessionManager {
+public class SessionManager {
 
     // Shared Preferences
     SharedPreferences pref;
@@ -25,7 +25,7 @@ class SessionManager {
     int PRIVATE_MODE = 0;
 
     // Sharedpref file name
-    private static final String PREF_NAME = "SmartRidePref";
+    private static final String PREF_NAME = "RunYourDataPref";
 
     // All Shared Preferences Keys
     private static final String IS_LOGIN = "IsLoggedIn";
@@ -66,7 +66,7 @@ class SessionManager {
         editor.commit();
 
         // After logout redirect user to Loging Activity
-        Intent i = new Intent(_context, MainActivity.class);
+        Intent i = new Intent(_context, RunYourData.class);
         // Closing all the Activities
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 

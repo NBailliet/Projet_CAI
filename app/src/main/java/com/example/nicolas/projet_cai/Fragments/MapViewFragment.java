@@ -10,7 +10,14 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+//import android.support.design.widget.FloatingActionButton;
+import com.example.nicolas.projet_cai.FloatingButtonsPlus.FloatingButtonsAdd;
+import com.example.nicolas.projet_cai.RunYourData;
+import com.example.nicolas.projet_cai.Services.LocalService;
+import com.example.nicolas.projet_cai.SettingsManager;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
+
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -49,11 +56,12 @@ public class MapViewFragment extends Fragment {
     MapView mMapView;
     private GoogleMap googleMap;
     View rootView;
+    SettingsManager settings;
 
 
     private static final String TAG = "Debug";
-    private Boolean flag = false;
     private BDD bdd;
+
 
 
     @Override
@@ -64,8 +72,12 @@ public class MapViewFragment extends Fragment {
         bdd = new BDD(getContext());
         setUserVisibleHint(false);
 
+        settings = RunYourData.getSettingsManager();
+
+
 
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
+
         mMapView.onCreate(savedInstanceState);
 
         mMapView.onResume(); // needed to get the map to display immediately
@@ -74,7 +86,7 @@ public class MapViewFragment extends Fragment {
         // We are registering an observer (mMessageReceiver) to receive Intents
         // with actions named "custom-event-name".
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
-                new IntentFilter("new location"));
+                new IntentFilter("Nouvelle localisation"));
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -110,7 +122,8 @@ public class MapViewFragment extends Fragment {
 
                 PolylineOptions polylineOptions = new PolylineOptions()
                         .width(5)
-                        .color(Color.RED);
+                        .color(Color.RED)
+                        .width(2);
 
                 bdd.open();
                 List<Localisation> locs = new ArrayList<Localisation>(bdd.getAllLoc());
@@ -139,21 +152,55 @@ public class MapViewFragment extends Fragment {
            showGPSDisabledAlertToUser();
         }
 
-        FloatingActionButton myFabStart = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButtonStart);
+        final FloatingActionButton myFabStart = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButtonStart);
+        final FloatingActionButton myFabEnd = (FloatingActionButton)  rootView.findViewById(R.id.floatingActionButtonEnd);
+
+        System.out.println("SETTINGS START RUN PREF = " + settings.getStartRunPref());
+
+        if (!settings.getStartRunPref())
+        {
+            Toast.makeText(getActivity(), "CORRECT START PREF", Toast.LENGTH_SHORT).show();
+            myFabEnd.setColorDisabled(0);
+            myFabEnd.setColorNormal(Color.GRAY);
+        }
+        else
+        {
+            Toast.makeText(getActivity(), "ERREUR START PREF", Toast.LENGTH_SHORT).show();
+            myFabStart.setColorDisabled(0);
+            myFabStart.setColorNormal(Color.GRAY);
+        }
+
         myFabStart.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
               Intent myIntentServiceIntent = new Intent(getActivity(), RideLocationGetter.class);
               getActivity().startService(myIntentServiceIntent);
+              myFabStart.setColorDisabled(0);
+              myFabStart.setColorNormal(Color.GRAY);
+              myFabEnd.setColorDisabled(1);
+              myFabEnd.setColorNormalResId(R.color.pink);
+              Intent intentChrono = new Intent(getActivity(), LocalService.class);
+              getActivity().startService(intentChrono);
+              settings.setStartRunPref(true);
+              settings.setStartPref(true);
+              settings.setStopPref(false);
+
 
             }
         });
 
-        FloatingActionButton myFabEnd = (FloatingActionButton)  rootView.findViewById(R.id.floatingActionButtonEnd);
         myFabEnd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
               Intent myIntentServiceIntent = new Intent(getActivity(), RideLocationGetter.class);
-
               getActivity().stopService(myIntentServiceIntent);
+              myFabEnd.setColorDisabled(0);
+              myFabEnd.setColorNormal(Color.GRAY);
+              myFabStart.setColorDisabled(1);
+              myFabStart.setColorNormalResId(R.color.pink);
+              Intent intentChrono2 = new Intent(getActivity(), LocalService.class);
+              getActivity().stopService(intentChrono2);
+              settings.setStartRunPref(false);
+              settings.setStartPref(false);
+              settings.setStopPref(true);
             }
         });
 
@@ -167,6 +214,9 @@ public class MapViewFragment extends Fragment {
                 }
             }
         });
+
+        FloatingActionsMenu myFabMenu = (FloatingActionsMenu) rootView.findViewById(R.id.menu_plus);
+        myFabMenu.setOnClickListener(new FloatingButtonsAdd());
 
 
         return rootView;
@@ -209,7 +259,7 @@ public class MapViewFragment extends Fragment {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setMessage("GPS désactivé sur votre téléphone. Veuillez l'activer pour accéder à cette fonctionnalité.")
                 .setCancelable(false)
-                .setPositiveButton("Aller dans vos paramètres pour activer la fonctionnalité GPS.",
+                .setPositiveButton("Activer la fonctionnalité GPS sur votre téléphone",
                         new DialogInterface.OnClickListener(){
                             public void onClick(DialogInterface dialog, int id){
                                 Intent callGPSSettingIntent = new Intent(

@@ -7,6 +7,8 @@ package com.example.nicolas.projet_cai;
 
 
 import android.Manifest;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -23,6 +25,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,9 +41,11 @@ import android.widget.Toast;
 import com.example.nicolas.projet_cai.BDD.BDD;
 import com.example.nicolas.projet_cai.BDD.Time;
 import com.example.nicolas.projet_cai.BDD.User;
+import com.example.nicolas.projet_cai.Fragments.CameraFragment;
 import com.example.nicolas.projet_cai.Fragments.HomeFragment;
 import com.example.nicolas.projet_cai.Fragments.MapViewFragment;
 import com.example.nicolas.projet_cai.Fragments.SendFragment;
+import com.example.nicolas.projet_cai.Fragments.SettingsFragment;
 import com.example.nicolas.projet_cai.Fragments.ShareFragment;
 
 import java.io.File;
@@ -48,7 +53,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity
+public class RunYourData extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -59,7 +64,8 @@ public class MainActivity extends AppCompatActivity
      */
 
     private BDD bdd;
-    SessionManager session;
+    static SessionManager session;
+    static SettingsManager settings;
 
     public User user;
     public User utilisateurCo;
@@ -75,10 +81,16 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //System.out.println("DELETING DATABASE\n");
+        //this.deleteDatabase("RunYourDataBDD.db");
 
         bdd = new BDD(this);
 
         session = new SessionManager(getApplicationContext());
+
+        if (!isMyServiceRunning(com.example.nicolas.projet_cai.Services.LocalService.class)) {
+            settings = new SettingsManager(getApplicationContext());
+        }
 
 
         ///////demande permission
@@ -121,15 +133,15 @@ public class MainActivity extends AppCompatActivity
             utilisateurCo = new User(session.getLoginPref());
             System.out.println(utilisateurCo.getLogin());
             connectionFlag=true;
-            Toast.makeText(MainActivity.this, "Heureux de vous revoir !" + utilisateurCo.getLogin(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(RunYourData.this, "Heureux de vous revoir " + utilisateurCo.getLogin() + " !", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void showBeginDialog() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(RunYourData.this);
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1);
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(RunYourData.this, android.R.layout.simple_list_item_1);
         bdd.open();
         List<User> list = bdd.getAllProfil();
         bdd.close();
@@ -144,13 +156,13 @@ public class MainActivity extends AppCompatActivity
         View convertView = (View) inflater.inflate(R.layout.profiles_list, null);
 
         listViewProfiles = (ListView) convertView.findViewById(R.id.listViewProfiles);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, mProfilesList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(RunYourData.this, android.R.layout.simple_list_item_1, mProfilesList);
         View footerView = getLayoutInflater().inflate(R.layout.new_account_item_custom, null);
         listViewProfiles.addFooterView(footerView);
         listViewProfiles.setAdapter(adapter);
         builder.setView(convertView);
-        builder.setIcon(R.drawable.logosmartrideg);
-        builder.setTitle("Bienvenue sur [...] !");
+        builder.setIcon(R.drawable.runyourdatatgrand2);
+        builder.setTitle("Bienvenue sur RunYourApp !");
         builder.setMessage("Merci de créer un compte ou vous connecter.");
         builder.setCancelable(false);
 
@@ -187,7 +199,7 @@ public class MainActivity extends AppCompatActivity
         final android.app.AlertDialog.Builder adb = new android.app.AlertDialog.Builder(this);
         adb.setView(alertDialogView);
         adb.setTitle("Créer un compte");
-        adb.setIcon(R.drawable.logosmartrideg);
+        adb.setIcon(R.drawable.runyourdatapetit2);
         adb.setCancelable(false);
 
         adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -201,7 +213,7 @@ public class MainActivity extends AppCompatActivity
 
                 if (login.isEmpty() || pswd.isEmpty()) {
                     //showErrorDialog();
-                    Toast.makeText(MainActivity.this, "Identifiant ou mot de passe non renseignés !", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RunYourData.this, "Identifiant ou mot de passe non renseigné(s) !", Toast.LENGTH_SHORT).show();
                     dialog.cancel();
                     showNewAccDialog();
                 } else {
@@ -222,11 +234,11 @@ public class MainActivity extends AppCompatActivity
 
                         bdd.insertProfil(user);
 
-                        Toast.makeText(MainActivity.this, "Compte créé avec succès !" + user.getLogin() + user.getPassword(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RunYourData.this, "Compte créé avec succès !" + user.getLogin() + user.getPassword(), Toast.LENGTH_SHORT).show();
                         dialog.cancel();
                         showConnectDialog(login);
                     } else {
-                        Toast.makeText(MainActivity.this, "Compte déjà existant, merci d'en créer un autre !", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RunYourData.this, "Compte déjà existant, merci d'en créer un autre !", Toast.LENGTH_SHORT).show();
                         dialog.cancel();
                         showNewAccDialog();
                     }
@@ -262,7 +274,7 @@ public class MainActivity extends AppCompatActivity
 
 
         adb.setTitle("Login");
-        adb.setIcon(R.drawable.logosmartrideg);
+        adb.setIcon(R.drawable.runyourdatapetit2);
         adb.setCancelable(false);
 
         adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -291,20 +303,20 @@ public class MainActivity extends AppCompatActivity
                             System.out.println(session.isLoggedIn());
                             System.out.println(session.getLoginPref());
                             showInfoDialog(utilisateurCo);
-                            Toast.makeText(MainActivity.this, "Connexion réalisée avec succès !", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RunYourData.this, "Connexion réalisée avec succès !", Toast.LENGTH_SHORT).show();
 
                         } else {
                             session.createLoginSession(login,connectionFlag);
                             dialog.cancel();
-                            Toast.makeText(MainActivity.this, "Connexion réalisée avec succès !", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RunYourData.this, "Connexion réalisée avec succès !", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(MainActivity.this, "Identifiant ou mot de passe incorrect, merci d'essayer à nouveau !", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RunYourData.this, "Identifiant ou mot de passe incorrect, merci d'essayer à nouveau !", Toast.LENGTH_SHORT).show();
                         dialog.cancel();
                         showConnectDialog(log);
                     }
                 } else {
-                    Toast.makeText(MainActivity.this, "Aucun utilisateur trouvé, un problème est survenu...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RunYourData.this, "Aucun utilisateur trouvé, un problème est survenu...", Toast.LENGTH_SHORT).show();
                     dialog.cancel();
                     showConnectDialog(log);
                 }
@@ -332,7 +344,7 @@ public class MainActivity extends AppCompatActivity
         adb.setView(alertDialogView);
         adb.setTitle("Information");
 
-        adb.setIcon(R.drawable.logosmartrideg);
+        adb.setIcon(R.drawable.runyourdatapetit2);
         adb.setCancelable(false);
 
 
@@ -352,7 +364,7 @@ public class MainActivity extends AppCompatActivity
 
                 if (nameConnect.isEmpty() || surnameConnect.isEmpty() || ageConnect == 0) {
 
-                    Toast.makeText(MainActivity.this, "Merci de remplir tous les champs.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RunYourData.this, "Merci de remplir tous les champs.", Toast.LENGTH_SHORT).show();
                     showInfoDialog(user);
 
                 } else {
@@ -363,7 +375,7 @@ public class MainActivity extends AppCompatActivity
                     bdd.updateProfil(user);
                     bdd.close();
                     Log.v("Information", user.getLogin() + " " + user.getPassword() + " " + user.getAge() + " " + user.getName() + " " + user.getSurname() + " " + user.getCreationDate());
-                    Toast.makeText(MainActivity.this, "Information sauvegardées !", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RunYourData.this, "Information sauvegardées !", Toast.LENGTH_SHORT).show();
                     dialog.cancel();
 
                 }
@@ -406,17 +418,21 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
+        FragmentManager fm = getSupportFragmentManager();
+        int labelColor = getColor(R.color.mat_black);
+        String сolorString = String.format("%X", labelColor).substring(2); // !!strip alpha value!!
 
         if (id == R.id.action_profile) {
             if (connectionFlag) {
-                Intent intent = new Intent(MainActivity.this, ProfilActivity.class);
+                Intent intent = new Intent(RunYourData.this, ProfilActivity.class);
                 intent.putExtra("Utilisateur pour BDD", utilisateurCo.getLogin());
                 startActivity(intent);
                 overridePendingTransition(R.anim.profil_animation1, R.anim.profil_animation2);
             }
             return true;
         } else if (id == R.id.action_settings) {
+            fm.beginTransaction().replace(R.id.frame, new SettingsFragment()).addToBackStack(null).commit();
+            setTitle(Html.fromHtml(String.format("<font color=\"#%s\">Options</font>", сolorString)));
             return true;
 
         } else if (id == R.id.action_logout) {
@@ -424,6 +440,7 @@ public class MainActivity extends AppCompatActivity
                 session.setIsLoggedIn(connectionFlag);
                 session.logoutUser();
                 return true;
+
         } else if (id == R.id.action_quitter) {
             finish();
             return true;
@@ -439,19 +456,24 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         FragmentManager fm = getSupportFragmentManager();
+        int labelColor = getColor(R.color.mat_black);
+        String сolorString = String.format("%X", labelColor).substring(2); // !!strip alpha value!!
 
         if (id == R.id.home) {
 
             fm.beginTransaction().replace(R.id.frame, new HomeFragment()).commit();
-            setTitle(getString(R.string.action_home));
+            //setTitle(getString(R.string.action_home));
+            setTitle(Html.fromHtml(String.format("<font color=\"#%s\">Accueil</font>", сolorString)));
+
 
         } else if (id == R.id.map) {
 
             fm.beginTransaction().replace(R.id.frame, new MapViewFragment()).commit();
-            setTitle(getString(R.string.action_map));
+            setTitle(Html.fromHtml(String.format("<font color=\"#%s\">Carte</font>", сolorString)));
 
         } else if (id == R.id.nav_camera) {
-            // Handle the camera action
+            fm.beginTransaction().replace(R.id.frame, new CameraFragment()).commit();
+            setTitle(Html.fromHtml(String.format("<font color=\"#%s\">Appareil Photo</font>", сolorString)));
 
         } else if (id == R.id.nav_share) {
 
@@ -466,11 +488,11 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/html");
             intent.putExtra(Intent.EXTRA_EMAIL, "emailaddress@emailaddress.com");
-            intent.putExtra(Intent.EXTRA_SUBJECT, "Données [...]");
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Données RunYourData");
             intent.putExtra(android.content.Intent.EXTRA_TEXT, "From My App");
             File root = Environment.getExternalStorageDirectory();
             intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(root.getAbsolutePath() + "/DCIM/100MEDIA/IMG0398.jpg"))); //ATTENTION CHANGER NOM FICHIER JPG POUR TEST !!!
-            intent.putExtra(Intent.EXTRA_TEXT, "Bonjour, vous pouvez trouver ci-joint mes résultats obtenus avec l'application [...] !");
+            intent.putExtra(Intent.EXTRA_TEXT, "Bonjour, vous pouvez trouver ci-joint mes résultats obtenus avec l'application RunYourData !");
 
             startActivity(Intent.createChooser(intent, "Envoyer Email"));
 
@@ -479,5 +501,23 @@ public class MainActivity extends AppCompatActivity
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public static SettingsManager getSettingsManager() {
+        return settings;
+    }
+
+    public static SessionManager getSessionManager() {
+        return session;
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) RunYourData.this.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
