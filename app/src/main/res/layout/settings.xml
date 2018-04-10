@@ -11,15 +11,14 @@
         android:layout_height="match_parent">
 
         <Button
-            android:text="Delete runs"
+            android:text="Supprimer parcours"
             android:textStyle="bold"
-            android:layout_width="300dp"
+            android:layout_width="200dp"
             android:layout_height="100dp"
             android:id="@+id/buttonRun"
-            android:layout_centerHorizontal="true"
             android:layout_marginTop="40dp"
-            android:drawableTop="@drawable/delete"
-            android:visibility="invisible"
+            android:layout_marginLeft="70dp"
+            android:drawableTop="@drawable/delete2"
             android:onClick="onClick"/>
 
 

@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -31,7 +32,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     String TABLE_RUN = "TABLE_RUN";
     SettingsManager settings;
     SessionManager session;
-    TextView textViewRun;
+    Button buttonRun;
     BDD bdd;
 
     @Override
@@ -39,7 +40,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         View settingsView = inflater.inflate(R.layout.settings, container, false);
         settings = RunYourData.getSettingsManager();
         session = RunYourData.getSessionManager();
-        textViewRun = (TextView) settingsView.findViewById(R.id.buttonRun);
+        buttonRun = (Button) settingsView.findViewById(R.id.buttonRun);
+        buttonRun.setOnClickListener(this);
         bdd = new BDD(getActivity());
         return settingsView;
     }
@@ -47,20 +49,19 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
 
-        //View parent = (View)v.getParent();
-        Activity activity = getActivity();
         if (v.hasOnClickListeners()) {
-
 
             switch (v.getId()) {
 
                 case R.id.buttonRun :
 
-                bdd.open();
-                System.out.println("LOGIN FOR USER TEST IN SETTINGS" + session.getLoginPref());
-                bdd.clearRunsForLogin(TABLE_RUN, session.getLoginPref());
-                bdd.close();
-                break;
+                    session.setLastRunName(null);
+                    session.setNbRun(0);
+                    session.setLastDistance(0);
+
+                    Toast.makeText(getContext(), "Parcours supprimés", Toast.LENGTH_SHORT).show();
+
+                    break;
             }
 
         }

@@ -19,6 +19,6 @@
 
     <string name="action_communicate">Communicate</string>
 
-    <string name="action_share">Partager</string>
-    <string name="action_send">Envoyer</string>
+    <string name="action_sms">Envoyer SMS</string>
+    <string name="action_send">Envoyer Email</string>
 </resources>

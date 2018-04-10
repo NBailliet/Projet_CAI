@@ -21,19 +21,20 @@
             android:text="Envoyer par SMS"
             android:layout_below="@id/camera_image"
             android:layout_alignEnd="@+id/camera_image"
+            android:layout_marginLeft="5dp"
             android:onClick="onClick"
-            android:layout_width="100dp"
-            android:layout_height="100dp" />
+            android:layout_width="150dp"
+            android:layout_height="100dp"
+            android:drawableTop="@drawable/sms"/>
 
         <Button
             android:id="@+id/boutonMail"
             android:text="Envoyer par mail"
             android:layout_below="@id/camera_image"
-            android:layout_alignEnd="@+id/camera_image"
-            android:layout_toRightOf="@id/boutonSMS"
             android:onClick="onClick"
-            android:layout_width="200dp"
-            android:layout_height="200dp" />
+            android:layout_width="150dp"
+            android:layout_height="100dp"
+            android:drawableTop="@drawable/email"/>
 
     </RelativeLayout>
 

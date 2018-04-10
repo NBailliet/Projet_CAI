@@ -140,7 +140,7 @@ public class SessionManager {
     }
 
     public String getLastRunName(){
-        String lastRunName = pref.getString(KEY_LOGIN,null);
+        String lastRunName = pref.getString(LAST_RUN_NAME,null);
         return lastRunName;
     }
 

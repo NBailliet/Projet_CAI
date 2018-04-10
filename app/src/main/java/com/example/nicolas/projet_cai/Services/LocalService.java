@@ -81,6 +81,8 @@ public class LocalService extends Service
                         .setUsesChronometer(true)
                         .setContentIntent(pIntent);
 
+        NotificationCompat notificationCompat = new NotificationCompat();
+
         mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // mId allows you to update the notification later on.

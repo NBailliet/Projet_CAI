@@ -12,9 +12,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
@@ -44,11 +42,10 @@ import com.example.nicolas.projet_cai.BDD.User;
 import com.example.nicolas.projet_cai.Fragments.CameraFragment;
 import com.example.nicolas.projet_cai.Fragments.HomeFragment;
 import com.example.nicolas.projet_cai.Fragments.MapViewFragment;
+import com.example.nicolas.projet_cai.Fragments.SMSFragment;
 import com.example.nicolas.projet_cai.Fragments.SendFragment;
 import com.example.nicolas.projet_cai.Fragments.SettingsFragment;
-import com.example.nicolas.projet_cai.Fragments.ShareFragment;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -475,26 +472,49 @@ public class RunYourData extends AppCompatActivity
             fm.beginTransaction().replace(R.id.frame, new CameraFragment()).commit();
             setTitle(Html.fromHtml(String.format("<font color=\"#%s\">Appareil Photo</font>", сolorString)));
 
-        } else if (id == R.id.nav_share) {
 
-            fm.beginTransaction().replace(R.id.frame, new ShareFragment()).commit();
-            setTitle(getString(R.string.action_share));
+        } else if (id == R.id.sensors) {
+
+            Intent intent = new Intent(RunYourData.this, Sensors.class);
+            startActivity(intent);
+
+        } else if (id == R.id.nav_sms) {
+
+            fm.beginTransaction().replace(R.id.frame, new SMSFragment()).commit();
+            setTitle(Html.fromHtml(String.format("<font color=\"#%s\">Envoyer Données SMS</font>", сolorString)));
+
+            Intent sms = new Intent(Intent.ACTION_SEND);
+            sms.setType("image/jpeg");
+
+            sms.putExtra(Intent.EXTRA_SUBJECT, "Données RunYourData\n");
+            sms.putExtra(Intent.EXTRA_TEXT, "Bonjour, vous pouvez trouver ci-après mes résultats obtenus avec l'application RunYourData : j'ai réalisé " + session.getNbRun() + " parcours et j'ai parcouru " + session.getLastDistance() + " km lors du dernier.");
+            //sms.putExtra("address","0000000000");
+            startActivity(sms);
+
+            /*Intent sms = new Intent(Intent.ACTION_SEND);
+            sms.setType("image/jpeg");
+            Uri pathsms = Uri.fromFile(f);
+            sms.putExtra(Intent.EXTRA_SUBJECT, "Photo RunYourData");
+            sms.putExtra(Intent.EXTRA_TEXT,"Bonjour, vous pouvez trouver ci-jointe une photo prise avec l'application RunYourData !");
+            //sms.putExtra("address","0000000000");
+            sms.putExtra(Intent.EXTRA_STREAM,pathsms);
+            startActivity(sms);*/
+
+
 
         } else if (id == R.id.nav_send) {
 
             fm.beginTransaction().replace(R.id.frame, new SendFragment()).commit();
-            setTitle(getString(R.string.action_send));
+            setTitle(Html.fromHtml(String.format("<font color=\"#%s\">Envoyer Données Email</font>", сolorString)));
 
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/html");
             intent.putExtra(Intent.EXTRA_EMAIL, "emailaddress@emailaddress.com");
-            intent.putExtra(Intent.EXTRA_SUBJECT, "Données RunYourData");
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Données RunYourData\n");
             intent.putExtra(android.content.Intent.EXTRA_TEXT, "From My App");
-            File root = Environment.getExternalStorageDirectory();
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(root.getAbsolutePath() + "/DCIM/100MEDIA/IMG0398.jpg"))); //ATTENTION CHANGER NOM FICHIER JPG POUR TEST !!!
-            intent.putExtra(Intent.EXTRA_TEXT, "Bonjour, vous pouvez trouver ci-joint mes résultats obtenus avec l'application RunYourData !");
+            intent.putExtra(Intent.EXTRA_TEXT, "Bonjour, vous pouvez trouver ci-après mes résultats obtenus avec l'application RunYourData : j'ai réalisé " + session.getNbRun() + " parcours et j'ai parcouru " + session.getLastDistance() + " km lors du dernier.");
 
-            startActivity(Intent.createChooser(intent, "Envoyer Email"));
+            startActivity(Intent.createChooser(intent, "Envoyer Données Email"));
 
         }
 

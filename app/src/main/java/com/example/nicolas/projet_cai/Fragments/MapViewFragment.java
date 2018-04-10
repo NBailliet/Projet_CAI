@@ -58,8 +58,6 @@ public class MapViewFragment extends Fragment {
     View rootView;
     SettingsManager settings;
 
-
-    private static final String TAG = "Debug";
     private BDD bdd;
 
 
@@ -99,26 +97,11 @@ public class MapViewFragment extends Fragment {
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
 
-                // For showing a move to my location button
                 if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
                     return;
                 }
 
                 googleMap.setMyLocationEnabled(true);
-
-                // For dropping a marker at a point on the Map
-                //LatLng sydney = new LatLng(-34, 151);
-
-                // Add a thin red line.
-
-
 
                 PolylineOptions polylineOptions = new PolylineOptions()
                         .width(5)
@@ -155,17 +138,17 @@ public class MapViewFragment extends Fragment {
         final FloatingActionButton myFabStart = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButtonStart);
         final FloatingActionButton myFabEnd = (FloatingActionButton)  rootView.findViewById(R.id.floatingActionButtonEnd);
 
-        System.out.println("SETTINGS START RUN PREF = " + settings.getStartRunPref());
+        //System.out.println("SETTINGS START RUN PREF = " + settings.getStartRunPref());
 
         if (!settings.getStartRunPref())
         {
-            Toast.makeText(getActivity(), "CORRECT START PREF", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "CORRECT START PREF", Toast.LENGTH_SHORT).show();
             myFabEnd.setColorDisabled(0);
             myFabEnd.setColorNormal(Color.GRAY);
         }
         else
         {
-            Toast.makeText(getActivity(), "ERREUR START PREF", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "ERREUR START PREF", Toast.LENGTH_SHORT).show();
             myFabStart.setColorDisabled(0);
             myFabStart.setColorNormal(Color.GRAY);
         }
@@ -178,11 +161,11 @@ public class MapViewFragment extends Fragment {
               myFabStart.setColorNormal(Color.GRAY);
               myFabEnd.setColorDisabled(1);
               myFabEnd.setColorNormalResId(R.color.pink);
-              Intent intentChrono = new Intent(getActivity(), LocalService.class);
-              getActivity().startService(intentChrono);
               settings.setStartRunPref(true);
               settings.setStartPref(true);
               settings.setStopPref(false);
+              Intent intentChrono = new Intent(getActivity(), LocalService.class);
+              getActivity().startService(intentChrono);
 
 
             }
@@ -225,9 +208,6 @@ public class MapViewFragment extends Fragment {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // Get extra data included in the Intent
-           // Boolean clear = intent.getBooleanExtra("clear map",false);
-            Log.d("receiver", "Got message: ");
 
             if (googleMap!=null) {
                 googleMap.clear();

@@ -46,11 +46,11 @@ public class RideLocationGetter extends Service {
     private LocationManager locationManager = null;
     private LocationListener locationListener = null;
     private List<Localisation> listDataLoc = new ArrayList<>();
-    private List<String> listDataRunName = new ArrayList<>();
+    //private List<String> listDataRunName = new ArrayList<>();
     private String currentDataName;
     //private List<Run> listDataRunTest = new ArrayList<>();
     int nbRun;
-    private ArrayList<Time> listDataTime = new ArrayList<>();
+   // private ArrayList<Time> listDataTime = new ArrayList<>();
     private Run run;
     private static final String TABLE_LOC = "TABLE_LOC";
     private BDD bdd;
@@ -115,9 +115,10 @@ public class RideLocationGetter extends Service {
         vib.vibrate(100);
         Toast.makeText(getBaseContext(), "Localisation du parcours lancée", Toast.LENGTH_SHORT).show();
 
+
         if (!testFirstRun) {
             //First run
-            Toast.makeText(this, "FIRST RUN", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "FIRST RUN", Toast.LENGTH_SHORT).show();
             //run = new Run ("Run0", session.getLoginPref(), 0);
             nbRun=1;
             currentDataName="Run0";
@@ -128,14 +129,14 @@ public class RideLocationGetter extends Service {
             //bdd.open();
             //listDataRun = bdd.getAllRun();
             //bdd.close();
-            nbRun = listDataRunName.size()-1;
+            nbRun = session.getNbRun();
             currentDataName = "Run" + nbRun;
+            nbRun = nbRun+1;
             //System.out.println("Run" + listDataRun.size());
             //run = new Run("Run" + listDataRun.size(), session.getLoginPref(), 0);
         }
         //System.out.println("RUN LOGIN = "+run.getLogin());
         //System.out.println("RUN DISTANCE = "+run.getDistance());
-        listDataRunName.add(currentDataName);
         //session.setLastRunName(currentDataName);
         session.createRunSession(currentDataName,0,nbRun);
         /*bdd.open();
@@ -147,12 +148,12 @@ public class RideLocationGetter extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        throw new UnsupportedOperationException("Pas encore implémenté");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.w(TAG, "new Location");
+        Log.w(TAG, "Nouvelle localisation");
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -179,7 +180,6 @@ public class RideLocationGetter extends Service {
             bdd.open();
             bdd.insertLoc(localisation);
             bdd.close();
-            Log.v(TAG, "insert");
             sendMessage();
 
         }
@@ -187,8 +187,7 @@ public class RideLocationGetter extends Service {
         // Send an Intent with an action named "custom-event-name". The Intent sent should
         // be received by the ReceiverActivity.
         private void sendMessage() {
-            Log.d("sender", "Broadcasting message");
-            Intent intent = new Intent("new location");
+            Intent intent = new Intent("Nouvelle Localisation");
             // You can also include some extra data.
             //intent.putExtra("clear map", true);
             LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
@@ -242,11 +241,9 @@ public class RideLocationGetter extends Service {
         Toast.makeText(getBaseContext(), "Localisation du parcours arrêtée", Toast.LENGTH_SHORT).show();
         session.setLastDistance((float)distanceG);
         testFirstRun=true;
-        /*bdd.open();
-        bdd.updateRun(run);
-        bdd.clearTable(TABLE_LOC);
-        bdd.close();*/
 
-        Log.w(TAG, "serviceLoc destroy");
+
+
+        //Log.w(TAG, "serviceLoc destroy");
     }
 }

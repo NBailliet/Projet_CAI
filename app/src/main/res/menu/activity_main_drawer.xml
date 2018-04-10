@@ -19,18 +19,24 @@
             android:icon="@drawable/ic_menu_camera"
             android:title="Appareil Photo" />
 
+        <item
+            android:id="@+id/sensors"
+            android:icon="@drawable/courbeshow"
+            android:title="Capteurs" />
+
     </group>
 
     <item android:title="Communicate">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Partager" />
-            <item
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Envoyer Email" />
+                android:title="Envoyer Données Email" />
+
+            <item
+                android:id="@+id/nav_sms"
+                android:icon="@drawable/sms"
+                android:title="Envoyer Données SMS" />
         </menu>
     </item>
 

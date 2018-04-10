@@ -8,17 +8,20 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Chronometer;
 
 import com.example.nicolas.projet_cai.R;
+import com.example.nicolas.projet_cai.Services.LocalService;
 
 /**
  * Created by Nicolas on 03/04/2018.
  */
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements View.OnClickListener {
 
         static Chronometer chronometer;
+        Button getBackRun;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -29,11 +32,28 @@ public class HomeFragment extends Fragment {
 
             View homeView = inflater.inflate(R.layout.home, container, false);
             chronometer = homeView.findViewById(R.id.chronometre);
+            chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener(){
+                @Override
+                public void onChronometerTick(Chronometer cArg) {
+                    long time = SystemClock.elapsedRealtime() - cArg.getBase();
+                    int h= (int)(time /3600000);
+                    int m= (int)(time - h*3600000)/60000;
+                    int s= (int)(time - h*3600000- m*60000)/1000 ;
+                    String hh = h < 10 ? "0"+h: h+"";
+                    String mm = m < 10 ? "0"+m: m+"";
+                    String ss = s < 10 ? "0"+s: s+"";
+                    cArg.setText(hh+":"+mm+":"+ss);
 
-            if (isMyServiceRunning(com.example.nicolas.projet_cai.Services.LocalService.class)) {
-                chronometer.setVisibility(0);
-                System.out.println(com.example.nicolas.projet_cai.Services.LocalService.getSeconds());
-                sec= com.example.nicolas.projet_cai.Services.LocalService.getSeconds();
+                }
+            });
+            getBackRun = homeView.findViewById(R.id.buttonRun);
+            getBackRun.setOnClickListener(this);
+
+            if (isMyServiceRunning(LocalService.class)) {
+                chronometer.setVisibility(View.VISIBLE);
+                getBackRun.setVisibility(View.VISIBLE);
+                System.out.println("SECONDS SERVICE" + LocalService.getSeconds());
+                sec= LocalService.getSeconds();
                 if (sec>60) {
                     min = (sec%3600)/60;
                     if (min>60) {
@@ -41,11 +61,10 @@ public class HomeFragment extends Fragment {
                     }
                     sec = sec - (hour*3600 + min*60);
                 }
-                System.out.println(sec);
-                System.out.println(min);
-                System.out.println(hour);
+                //System.out.println(sec);
+                //System.out.println(min);
+                //System.out.println(hour);
                 chronometer.setBase(SystemClock.elapsedRealtime() - (hour * 60000 + min * 60000 + sec * 1000));
-                //chronometer.setText(hh+":"+mm+":"+ss);
                 chronometer.start();
             }
             return homeView;
@@ -63,6 +82,27 @@ public class HomeFragment extends Fragment {
             }
         }
         return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+
+            int id = v.getId();
+
+            switch (id) {
+
+                case R.id.buttonRun :
+
+                    MapViewFragment mapFrag = new MapViewFragment();
+                    this.getFragmentManager().beginTransaction()
+                            .replace(R.id.frame, mapFrag, "MapView Fragment OK")
+                            .addToBackStack(null)
+                            .commit();
+
+                    break;
+
+            }
+
     }
 }
 

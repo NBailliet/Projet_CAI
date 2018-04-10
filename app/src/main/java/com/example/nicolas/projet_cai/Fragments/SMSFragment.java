@@ -12,12 +12,11 @@ import com.example.nicolas.projet_cai.R;
  * Created by Nicolas on 03/04/2018.
  */
 
-public class MapFragment extends Fragment {
+public class SMSFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mapView = inflater.inflate(R.layout.map, container, false);
-        return mapView;
+        View smsView = inflater.inflate(R.layout.sms, container, false);
+        return smsView;
     }
 }
-

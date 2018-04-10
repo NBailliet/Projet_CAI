@@ -20,16 +20,45 @@
             android:src="@drawable/runyourdatatgrand2"
             android:visibility="visible"/>
 
+        <TextView
+            android:textColor="#FFFFFF"
+            android:textSize="17dp"
+            android:textStyle="bold"
+            android:layout_below="@+id/logoHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:id="@+id/textHome"
+            android:text="Bienvenue sur l'application RunYourData !"
+            android:textAlignment="center"/>
+
         <Chronometer
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/logoHome"
+            android:layout_below="@+id/textHome"
+            android:layout_marginTop="20dp"
             android:layout_centerHorizontal="true"
             android:textStyle="bold"
             android:textSize="45dp"
             android:id="@+id/chronometre"
             android:visibility="invisible"
             android:textColor="#FE2E2E" />
+
+        <Button
+            android:text="Go To Current Run in Map"
+            android:textStyle="bold"
+            android:layout_width="300dp"
+            android:layout_height="100dp"
+            android:id="@+id/buttonRun"
+            android:backgroundTint="#FAAC58"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:layout_below="@+id/chronometre"
+            android:drawableTop="@drawable/info"
+            android:visibility="invisible"
+            android:onClick="onClick"/>
 
     </RelativeLayout>
 
