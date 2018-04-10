@@ -46,8 +46,10 @@ public class RideLocationGetter extends Service {
     private LocationManager locationManager = null;
     private LocationListener locationListener = null;
     private List<Localisation> listDataLoc = new ArrayList<>();
-    private List<Run> listDataRun = new ArrayList<>();
-    private List<Run> listDataRunTest = new ArrayList<>();
+    private List<String> listDataRunName = new ArrayList<>();
+    private String currentDataName;
+    //private List<Run> listDataRunTest = new ArrayList<>();
+    int nbRun;
     private ArrayList<Time> listDataTime = new ArrayList<>();
     private Run run;
     private static final String TABLE_LOC = "TABLE_LOC";
@@ -116,24 +118,31 @@ public class RideLocationGetter extends Service {
         if (!testFirstRun) {
             //First run
             Toast.makeText(this, "FIRST RUN", Toast.LENGTH_SHORT).show();
-            run = new Run ("Run0", session.getLoginPref(), 0);
-            System.out.println("RUN LOGIN = "+run.getLogin());
-            System.out.println("RUN DISTANCE = "+run.getDistance());
+            //run = new Run ("Run0", session.getLoginPref(), 0);
+            nbRun=1;
+            currentDataName="Run0";
+            //System.out.println("RUN LOGIN = "+run.getLogin());
+            //System.out.println("RUN DISTANCE = "+run.getDistance());
         }
         else {
-            bdd.open();
-            listDataRun = bdd.getAllRun();
-            bdd.close();
-            System.out.println("Run" + listDataRun.size());
-            run = new Run("Run" + listDataRun.size(), session.getLoginPref(), 0);
+            //bdd.open();
+            //listDataRun = bdd.getAllRun();
+            //bdd.close();
+            nbRun = listDataRunName.size()-1;
+            currentDataName = "Run" + nbRun;
+            //System.out.println("Run" + listDataRun.size());
+            //run = new Run("Run" + listDataRun.size(), session.getLoginPref(), 0);
         }
-        System.out.println("RUN LOGIN = "+run.getLogin());
-        System.out.println("RUN DISTANCE = "+run.getDistance());
-        bdd.open();
+        //System.out.println("RUN LOGIN = "+run.getLogin());
+        //System.out.println("RUN DISTANCE = "+run.getDistance());
+        listDataRunName.add(currentDataName);
+        //session.setLastRunName(currentDataName);
+        session.createRunSession(currentDataName,0,nbRun);
+        /*bdd.open();
         bdd.insertRun(run);
         listDataRunTest = bdd.getRunsWithLogin(run.getLogin());
         bdd.close();
-        System.out.println("RUN NAME" + listDataRunTest.get(0).getName() + "RUN LOGIN" + listDataRunTest.get(0).getLogin() + "RUN DISTANCE" + listDataRunTest.get(0).getDistance());
+        System.out.println("RUN NAME" + listDataRunTest.get(0).getName() + "RUN LOGIN" + listDataRunTest.get(0).getLogin() + "RUN DISTANCE" + listDataRunTest.get(0).getDistance());*/
     }
 
     @Override
@@ -227,14 +236,16 @@ public class RideLocationGetter extends Service {
             }
         }
         //TODO GERER ACCELERO ET GYRO POUR VITESSE
-        run.setDistance(distanceG);
+        //run.setDistance(distanceG);
         String distString = String.format("%.11f", distanceG);
         Toast.makeText(getBaseContext(), "Distance totale parcourue : " + distString + " km", Toast.LENGTH_SHORT).show();
         Toast.makeText(getBaseContext(), "Localisation du parcours arrêtée", Toast.LENGTH_SHORT).show();
-        bdd.open();
+        session.setLastDistance((float)distanceG);
+        testFirstRun=true;
+        /*bdd.open();
         bdd.updateRun(run);
         bdd.clearTable(TABLE_LOC);
-        bdd.close();
+        bdd.close();*/
 
         Log.w(TAG, "serviceLoc destroy");
     }

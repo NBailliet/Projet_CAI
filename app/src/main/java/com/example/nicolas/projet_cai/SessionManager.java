@@ -33,6 +33,19 @@ public class SessionManager {
     // Login
     public static final String KEY_LOGIN = "login";
 
+    // Is First Run
+    public static final String IS_FIRST_RUN = "IsFirstRun";
+
+    // Last Run Name
+    public static final String LAST_RUN_NAME = "LastRunName";
+
+    // Last Distance
+    public static final String LAST_DISTANCE = "LastDistance";
+
+    //Nb Run
+    public static final String NB_RUN = "NbRun";
+
+
 
 
     // Constructor
@@ -45,15 +58,31 @@ public class SessionManager {
     /**
      * Create login session
      * */
-    public void createLoginSession(String login, Boolean test){
+    public void createLoginSession(String login, Boolean test, Boolean isfirstrun){
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, test);
 
         // Storing name in pref
         editor.putString(KEY_LOGIN, login);
 
+        editor.putBoolean(IS_FIRST_RUN,isfirstrun);
+
+        editor.putString(LAST_RUN_NAME, login);
+
         // commit changes
         editor.commit();
+    }
+
+    public void createRunSession(String name, float distance, int nbrun) {
+
+        editor.putString(LAST_RUN_NAME,name);
+
+        editor.putFloat(LAST_DISTANCE,distance);
+
+        editor.putInt(NB_RUN,nbrun);
+
+        editor.commit();
+
     }
 
 
@@ -63,6 +92,12 @@ public class SessionManager {
     public void logoutUser(){
         // Clearing all data from Shared Preferences
         editor.remove(KEY_LOGIN);
+        if (getIsFirstRun()) {
+            editor.remove(LAST_RUN_NAME);
+            editor.remove(LAST_DISTANCE);
+            editor.remove(NB_RUN);
+        }
+        editor.remove(IS_FIRST_RUN);
         editor.commit();
 
         // After logout redirect user to Loging Activity
@@ -90,9 +125,47 @@ public class SessionManager {
         editor.commit();
     }
 
+    public boolean getIsFirstRun(){
+        return pref.getBoolean(IS_FIRST_RUN, false);
+    }
+
+    public void setIsFirstRun(Boolean isFirstRun){
+        editor.putBoolean(IS_FIRST_RUN, isFirstRun);
+        editor.commit();
+    }
+
     public String getLoginPref(){
         String loginPref = pref.getString(KEY_LOGIN,null);
         return loginPref;
     }
+
+    public String getLastRunName(){
+        String lastRunName = pref.getString(KEY_LOGIN,null);
+        return lastRunName;
+    }
+
+    public void setLastRunName(String lastRunName){
+        editor.putString(IS_FIRST_RUN, lastRunName);
+        editor.commit();
+    }
+
+    public float getLastDistance(){
+        return pref.getFloat(LAST_DISTANCE, 0);
+    }
+
+    public void setLastDistance(float distance){
+        editor.putFloat(LAST_DISTANCE, distance);
+        editor.commit();
+    }
+
+    public int getNbRun(){
+        return pref.getInt(NB_RUN, 0);
+    }
+
+    public void setNbRun(int nbrun){
+        editor.putInt(NB_RUN, nbrun);
+        editor.commit();
+    }
+
 
 }

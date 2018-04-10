@@ -1,16 +1,24 @@
 package com.example.nicolas.projet_cai.Fragments;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Camera;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.nicolas.projet_cai.R;
 
@@ -25,6 +33,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
     ImageView mImageView;
     Button boutonSMS;
     //Button boutonMail;
+    Camera camera;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,8 +43,14 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
         //boutonMail = cameraView.findViewById(R.id.boutonMail);
         boutonSMS.setOnClickListener(this);
         //boutonMail.setOnClickListener(this);
-        dispatchTakePictureIntent();
+        camera = new Camera();
 
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED){
+            showCameraDisabledAlertToUser();
+        } else {
+            dispatchTakePictureIntent();
+        }
 
         return cameraView;
     }
@@ -61,6 +76,28 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             mImageView.setImageBitmap(imageBitmap);
         }
+    }
+
+    private void showCameraDisabledAlertToUser(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder.setMessage("Autorisation pour appareil photo désactivée sur votre téléphone. Veuillez l'activer pour accéder à cette fonctionnalité.")
+                .setCancelable(false)
+                .setPositiveButton("Activer l'appareil photo pour cette application",
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int id){
+                                Intent callCameraSettingIntent = new Intent(
+                                        Settings.ACTION_APPLICATION_SETTINGS);
+                                startActivity(callCameraSettingIntent);
+                            }
+                        });
+        alertDialogBuilder.setNegativeButton("Annuler",
+                new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int id){
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
     }
 
 

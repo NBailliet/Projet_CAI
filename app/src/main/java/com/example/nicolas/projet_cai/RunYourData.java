@@ -298,7 +298,7 @@ public class RunYourData extends AppCompatActivity
                         connectionFlag=true;
                         if (utilisateurCo.getName() == null || utilisateurCo.getSurname() == null || utilisateurCo.getAge() == 0) {
                             dialog.cancel();
-                            session.createLoginSession(login,connectionFlag);
+                            session.createLoginSession(login,connectionFlag,false);
                             //settings.setRunPref(false);
                             System.out.println(session.isLoggedIn());
                             System.out.println(session.getLoginPref());
@@ -306,7 +306,7 @@ public class RunYourData extends AppCompatActivity
                             Toast.makeText(RunYourData.this, "Connexion réalisée avec succès !", Toast.LENGTH_SHORT).show();
 
                         } else {
-                            session.createLoginSession(login,connectionFlag);
+                            session.createLoginSession(login,connectionFlag,false);
                             dialog.cancel();
                             Toast.makeText(RunYourData.this, "Connexion réalisée avec succès !", Toast.LENGTH_SHORT).show();
                         }

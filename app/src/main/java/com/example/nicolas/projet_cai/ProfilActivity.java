@@ -17,6 +17,7 @@ import java.util.List;
 public class ProfilActivity extends AppCompatActivity {
 
     private BDD bdd;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,8 @@ public class ProfilActivity extends AppCompatActivity {
         bdd = new BDD(this);
         setContentView(R.layout.activity_profil);
         setTitle("Profile");
+
+        session = RunYourData.getSessionManager();
 
         String login = null;
         if (savedInstanceState == null) {
@@ -38,13 +41,18 @@ public class ProfilActivity extends AppCompatActivity {
 
         bdd.open();
         User user = bdd.getUserWithLogin(login);
-        List<Run> run = bdd.getRunsWithLogin(login);
-        int nbRun = run.size();
-        System.out.println("NB RUN : " + nbRun);
-        double lastDistance = run.get(nbRun-1).getDistance();
         bdd.close();
 
-        if  ((user!=null)&&(run!=null)) {
+
+        int nbRun = session.getNbRun();
+        double lastDistance = (double)session.getLastDistance();
+
+        //List<Run> run = bdd.getRunsWithLogin(login);
+        //int nbRun = run.size();
+        //System.out.println("NB RUN" + nbRun);
+        //double lastDistance = run.get(nbRun-1).getDistance();
+
+        if  (user!=null) {
             TextView loginP = (TextView) findViewById(R.id.textlogin);
             System.out.println("GETLOGIN CHECK : " + user.getLogin());
             loginP.setText(user.getLogin());
