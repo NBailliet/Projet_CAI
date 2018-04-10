@@ -130,8 +130,8 @@ public class Sensors extends AppCompatActivity implements SensorEventListener {
         currentZ.setText(Float.toString(deltaZ));
         */
         currentX.setText(Float.toString(x));
-        currentX.setText(Float.toString(y));
-        currentX.setText(Float.toString(z));
+        currentY.setText(Float.toString(y));
+        currentZ.setText(Float.toString(z));
     }
 
     /*
